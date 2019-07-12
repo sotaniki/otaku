@@ -13,7 +13,7 @@ parent = "https://www.mindat.org"
 html = urllib.request.urlopen(url) #指定したURLからhtmlをもってくる
 soup = BeautifulSoup(html, 'html.parser')
 
-a = soup.find_all('a') #<a>タグで囲まれた部分の中身(JMC numberのURLが含まれる)を抜き出す
+a = soup.find_all('a') #<a>タグで囲まれた部分の中身を抜き出す
 url_list = []
 locality = []
 num = 0
