@@ -7,8 +7,8 @@ import urllib
 import csv
 import pprint
 
-mineral = input("mineral name: ") #鉱物名を入れてね　地域名とかでも行けるはず
-url = "https://www.mindat.org/search.php?search=" + mineral
+mineral = input("mineral name: ") #鉱物名を入れる　地域名とかでも行けるはず(地域名の場合重複してcsvに書き込む恐れがある)
+url = "https://www.mindat.org/search.php?search=" + mineral #検索url
 parent = "https://www.mindat.org"
 html = urllib.request.urlopen(url) #指定したURLからhtmlをもってくる
 soup = BeautifulSoup(html, 'html.parser')
@@ -19,22 +19,26 @@ locality = []
 num = 0
 
 for tag in a:
-    mojiretsu = ','.join(str(tag)) #tagが扱いづらい型なので文字列化した
-    s = mojiretsu[18] + mojiretsu[20] + mojiretsu[22] + mojiretsu[24]
-    if s == "/loc":
+    letter = "".join(str(tag)) #aタグの中身を文字列にする
+    #print(letter)
+    y = letter[9] + letter[10] + letter[11] + letter[12]
+    #print(y)
+    if y == "/loc": #aタグの中身の指定した箇所が/locに一致する場合、urlを取得
         for i in range(14):
-            if mojiretsu[22+i*2] != '"':
-                s = s + mojiretsu[22+i*2]
+            if letter[13+i] != '"': #urlを取得した後for文を抜ける
+                y = y + letter[13+i]
             else:
                 break
-        url_list.append(parent + s)
+        url_list.append(parent + y)
+
         for item in tag: #産地名を持ってくる
             num = num + 1
             locality.append(item)
+            print(item, parent+y) #ターミナル上に産地名とURLを表示
 
 print(num) #the number of localities
 
-filename = mineral + "_locality.csv"
+filename = mineral + "_locality.csv" #csvファイルへの書き込み
 g = open(filename, 'w')
 writer = csv.writer(g, lineterminator='\n')
 csvlist = []
